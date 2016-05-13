@@ -6,7 +6,7 @@
 Summary:       Default HTML formatter for SimpleCov
 Name:          %{?scl_prefix}rubygem-%{gem_name}
 Version:       0.10.0
-Release:       3%{?dist}
+Release:       4%{?dist}
 Group:         Development/Languages
 License:       MIT
 URL:           https://github.com/colszowka/simplecov-html
@@ -20,8 +20,8 @@ BuildRequires: %{?scl_prefix_ruby}rubygems-devel
 # For tests
 # Cant run tests because they require a circular
 #  dependancy that cant be done yet
-#BuildRequires: %{?scl_prefix}rubygem(test-unit)
-#BuildRequires: %{?scl_prefix}rubygem(simplecov)
+BuildRequires: %{?scl_prefix_ruby}rubygem(test-unit)
+BuildRequires: %{?scl_prefix}rubygem(simplecov)
 BuildArch:     noarch
 Provides:      %{?scl_prefix}rubygem(%{gem_name}) = %{version}
 
@@ -91,6 +91,9 @@ rm -f %{buildroot}%{gem_instdir}/simplecov-html.gemspec
 %{gem_instdir}/test
 
 %changelog
+* Fri Apr 08 2016 Pavel Valena <pvalena@redhat.com> - 0.10.0-4
+- Enable tests
+
 * Wed Apr 06 2016 Pavel Valena <pvalena@redhat.com> - 0.10.0-3
 - Add scl macros
 
