@@ -6,7 +6,7 @@
 Summary:       Default HTML formatter for SimpleCov
 Name:          %{?scl_prefix}rubygem-%{gem_name}
 Version:       0.10.0
-Release:       4%{?dist}
+Release:       5%{?dist}
 Group:         Development/Languages
 License:       MIT
 URL:           https://github.com/colszowka/simplecov-html
@@ -17,9 +17,6 @@ Requires:      %{?scl_prefix_ruby}ruby
 Requires:      %{?scl_prefix_ruby}rubygems
 BuildRequires: %{?scl_prefix_ruby}ruby
 BuildRequires: %{?scl_prefix_ruby}rubygems-devel
-# For tests
-# Cant run tests because they require a circular
-#  dependancy that cant be done yet
 BuildRequires: %{?scl_prefix_ruby}rubygem(test-unit)
 BuildRequires: %{?scl_prefix}rubygem(simplecov)
 BuildArch:     noarch
@@ -69,9 +66,14 @@ rm -f %{buildroot}%{gem_instdir}/Gemfile
 rm -f %{buildroot}%{gem_instdir}/simplecov-html.gemspec
 
 %check
-# Cant run tests because they require a circular
-#  dependancy that cant be done yet
-#testrb2 -Ilib test
+pushd .%{gem_instdir}
+# Remove bundler require
+sed -i '/bundler/ s/^/#/' test/helper.rb
+
+%{?scl:scl enable %{scl} - << \EOF}
+ruby -I.:lib:test -e "Dir.glob('./test/test_*.rb').each {|t| require t}"
+%{?scl:EOF}
+popd
 
 %files
 %dir %{gem_instdir}
@@ -91,6 +93,9 @@ rm -f %{buildroot}%{gem_instdir}/simplecov-html.gemspec
 %{gem_instdir}/test
 
 %changelog
+* Fri Apr 08 2016 Pavel Valena <pvalena@redhat.com> - 0.10.0-5
+- Fix tests execution
+
 * Fri Apr 08 2016 Pavel Valena <pvalena@redhat.com> - 0.10.0-4
 - Enable tests
 
